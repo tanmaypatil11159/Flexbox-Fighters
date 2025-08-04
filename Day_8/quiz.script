@@ -1,0 +1,188 @@
+document.addEventListener("DOMContentLoaded", () => {
+  let currentQuestion = 0;
+  let score = 0;
+  let hearts = 5;
+  let selectedOption = -1;
+
+  function startGame() {
+    currentQuestion = 0;
+    score = 0;
+    hearts = 5;
+    selectedOption = -1;
+    updateHeartsDisplay();
+    updateScore();
+    displayQuestion();
+    document.getElementById("gameArea").style.display = "block";
+    document.getElementById("resultScreen").style.display = "none";
+  }
+
+  function displayQuestion() {
+    fetch("https://kanjiapi.dev/v1/kanji/jlpt-5")
+      .then((res) => res.json())
+      .then((kanjiList) => {
+        // Shuffle and pick 4 random kanji
+        const kanjiChoices = kanjiList
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 4);
+
+        // Fetch meanings for all 4
+        return Promise.all(
+          kanjiChoices.map((k) =>
+            fetch(`https://kanjiapi.dev/v1/kanji/${k}`).then((res) =>
+              res.json()
+            )
+          )
+        );
+      })
+      .then((data) => {
+
+        const questionData = data[0]; // actual quiz kanji
+        const correctMeaning = questionData.meanings[0];
+        const options = data.map((item) => item.meanings[0]);
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
+        const correctIndex = shuffledOptions.indexOf(correctMeaning);
+
+        // DOM element update
+        document.getElementById(
+          "question"
+        ).textContent = `What does '${questionData.kanji}' mean?`;
+        document.getElementById("questionNumber").textContent =
+          currentQuestion + 1;
+
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+
+        shuffledOptions.forEach((option, index) => {
+          const optionDiv = document.createElement("div");
+          optionDiv.classList.add("option");
+          optionDiv.textContent = `${String.fromCharCode(
+            65 + index
+          )}. ${option}`;
+          optionDiv.onclick = () =>
+            selectOption(index, correctIndex, shuffledOptions);
+          optionsContainer.appendChild(optionDiv);
+        });
+
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("feedback").style.display = "none";
+        selectedOption = -1;
+      });
+
+  }
+
+  function selectOption(index, correctIndex, optionsArray) {
+    if (selectedOption !== -1) return;
+    selectedOption = index;
+    const options = document.querySelectorAll(".option");
+
+    options[index].classList.add("selected");
+
+    options[correctIndex].classList.add("correct");
+
+    if (index !== correctIndex) {
+      options[index].classList.remove("selected");
+      options[index].classList.add("wrong");
+      loseHeart();
+      showFeedback(false, optionsArray[correctIndex]);
+
+      const mySound = new Audio('path/to/your/sound.mp3'); // for sound
+      document.querySelector('.game-container').classList.add('shake');
+      setTimeout(() => {
+        document.querySelector('.game-container').classList.remove('shake');
+      }, 600);
+    } 
+    else {
+      score += 10;
+      updateScore();
+      showFeedback(true);
+    }
+
+    options.forEach((option) => option.classList.add("disabled"));
+    document.getElementById("nextBtn").style.display = "inline-block";
+
+    setTimeout(() => {
+      if (hearts > 0 && currentQuestion < 10) {
+        nextQuestion(); // Advance after user sees feedback
+      }
+    }, 2000);
+
+    if (hearts === 0) {
+      setTimeout(() => endGame(), 2000);
+    }
+  }
+
+  function showFeedback(isCorrect, correctAnswer) {
+    const feedback = document.getElementById("feedback");
+    feedback.style.display = "block";
+
+    if (isCorrect) {
+      feedback.textContent = "🎉 Correct! Well done!";
+      feedback.className = "feedback correct";
+    } else {
+      feedback.textContent = `💔 Wrong! The correct answer was: ${correctAnswer}`;
+      feedback.className = "feedback wrong";
+    }
+  }
+
+  function loseHeart() {
+    if (hearts > 0) {
+      hearts--;
+      updateHeartsDisplay();
+    }
+  }
+
+  function updateHeartsDisplay() {
+    const heartElements = document.querySelectorAll(".heart");
+    heartElements.forEach((heart, index) => {
+      if (index >= hearts) {
+        heart.classList.add("lost");
+      } else {
+        heart.classList.remove("lost");
+      }
+    });
+  }
+
+  function updateScore() {
+    document.getElementById("score").textContent = score;
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+
+    if (currentQuestion >= 10 || hearts === 0) {
+      endGame();
+    } else {
+      displayQuestion();
+    }
+  }
+
+  function endGame() {
+    document.getElementById("gameArea").style.display = "none";
+    document.getElementById("resultScreen").style.display = "block";
+
+    const resultTitle = document.getElementById("resultTitle");
+    const finalScore = document.getElementById("finalScore");
+
+    if (hearts === 0) {
+      resultTitle.textContent = "Game Over!";
+      resultTitle.style.color = "#e53e3e";
+    } else {
+      resultTitle.textContent = "🎉 Quiz Complete!";
+      resultTitle.style.color = "#48bb78";
+    }
+
+    const percentage = Math.round((score / (questions.length * 10)) * 100);
+    finalScore.innerHTML = `
+        <div>Final Score: <strong>${score}/${questions.length * 10
+      }</strong></div>
+        <div>Percentage: <strong>${percentage}%</strong></div>
+        <div>Hearts Remaining: <strong>${hearts}/5</strong></div>
+    `;
+  }
+
+  function restartGame() {
+    startGame();
+  }
+
+  window.onload = startGame;
+});

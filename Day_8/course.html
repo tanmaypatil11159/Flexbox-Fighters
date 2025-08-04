@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Langsy-German</title>
+  <link rel="stylesheet" href="./course_style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo gradient-text">Langsy</div>
+    </div>
+    <input type="checkbox" id="menu-toggle" />
+    <label for="menu-toggle" class="hamburger">&#9776;</label>
+    <nav>
+      <ul class="nav-links">
+        <li><a onclick="window.location.href='Home.html'" href="#">Home</a></li>
+        <li><a onclick="window.location.href='About.html'" href="#">About Us</a></li>
+        <li><a onclick="window.location.href='3.html'" href="#" href="#" class="active">Courses</a></li>
+        <li><a href="#">Test</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="header">
+    <h1 class="gradient-text">Learn German</h1>
+    <div class="description">
+      <p>
+        Unlock the world of German language and culture! Whether you're a
+        complete beginner or looking to sharpen your skills, our interactive
+        lessons will make learning German fun and effective. Start your
+        journey today!
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="lessons">
+      <h2 class="gradient-text">Course Lessons</h2>
+
+      <div class="lesson lesson-first">
+        <div class="lesson-header">
+          <h3>Lesson 1: Basic Greetings</h3>
+          <span class="lesson-toggle">▼</span>
+        </div>
+        <div class="lesson-content hidden" id="lesson1-content">
+          <ul class="lesson-list">
+            <li>
+              <audio id="player" src="./german-shepherd-barking-302356.mp3"></audio>
+              <div class="custom-controls">
+                <h4>Hello</h4>
+                <button class="play"><img src="./play-button.png" alt=""></button>
+                <button class="Pause hidden">⏸️ Pause</button>
+              </div>
+            </li>
+            <li>Hi</li>
+            <li>How are you?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson" onclick="window.location.href='game.html'">
+        <div class="lesson-header">
+          <h3>Lesson 2: Numbers 1-10</h3>
+          <span class="lesson-toggle">▼</span>
+        </div>
+        <div class="lesson-content hidden" id="lesson2-content">
+          <ul class="lesson-list">
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <h3>Lesson 3: Common Phrases</h3>
+          <span class="lesson-toggle">▼</span>
+        </div>
+        <div class="lesson-content hidden" id="lesson3-content">
+          <ul class="lesson-list">
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="./course_script.js"></script>
+  <footer>
+    <div class="socials">
+      <p>&copy; 2025 German Learning Hub - Student Project</p>
+      <p>Practice makes perfect! Viel Erfolg! (Good luck!)</p>
+    </div>
+  </footer>
+</body>
+
+</html>

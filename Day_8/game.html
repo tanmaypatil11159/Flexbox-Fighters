@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning-German</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #131f24;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            background: rgba(68, 68, 68, 0);
+            border-radius: 20px;
+            color: rgb(0, 0, 0);
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-header {
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            color: linear-gradient(to left, #00f0ff, #9604ff, #ff00d4, #0081f2, #00f0ff);
+            margin-bottom: 10px;
+        }
+
+        .hearts-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+           .line {
+            background-color: #37464f;
+            height: 2px;
+            width: 100%;
+        }
+        .heart {
+            font-size: 2rem;
+            color: #e53e3e;
+            transition: all 0.3s ease;
+        }
+
+        .heart.lost {
+            transform: scale(0);
+        }
+
+        .score-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .question-container {
+            background: #6c6f7100;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            color: black;
+        }
+
+        .question {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #000000;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: #37464f;
+            border: 2px solid #787878;
+            border-radius: 12px;
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            transform: translateY(2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #4fb0ff 0%, #3182ce 100%);
+            color: white;
+            border-color: #50a2ff;
+        }
+
+        /* for correct */
+        .option.correct {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border-color: #2f855a;
+        }
+
+        /* for wrong */
+        .option.wrong {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            border-color: #9b2c2c;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+        }
+
+        .result-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .final-score {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #a6a1a1;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+        }
+
+        .feedback {
+            margin: 15px 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .feedback.wrong {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        .heart.beating {
+            animation: heartBeat 0.6s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.6s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <!-- part 1 -->
+            <h1 class="game-title">Your lives</h1>
+            <div class="hearts-container" id="heartsContainer">
+                <span class="heart"><img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+            </div>
+
+            <div class="score-info">
+                <span>Question: <span id="questionNumber">1</span>/10</span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+
+             <div class="line"></div>
+        </div>
+        <!-- part 2 -->
+        <div id="gameArea">
+            <div style="color: white;" class="question" id="question"></div>
+            <div class="question-container">
+                <div class="options" id="options"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+            </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h2 class="result-title" id="resultTitle"></h2>
+            <div class="final-score" id="finalScore"></div>
+            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+<!-- backend part -->
+    <!-- <script>
+        const questions = [
+            {
+                question: "What is Zero ?",
+                options: ["Eins", "Null", "Ziero", "Zwoei"],
+                correct: 1
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                correct: 1
+            },
+            {
+                question: "What is 15 + 27?",
+                options: ["40", "41", "42", "43"],
+                correct: 2
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Van Gogh", "Picasso", "Leonardo da Vinci", "Michelangelo"],
+                correct: 2
+            },
+            {
+                question: "What is the largest ocean on Earth?",
+                options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+                correct: 3
+            },
+            {
+                question: "Which element has the chemical symbol 'O'?",
+                options: ["Gold", "Oxygen", "Silver", "Iron"],
+                correct: 1
+            },
+            {
+                question: "In which year did World War II end?",
+                options: ["1944", "1945", "1946", "1947"],
+                correct: 1
+            },
+            {
+                question: "What is the square root of 64?",
+                options: ["6", "7", "8", "9"],
+                correct: 2
+            },
+            {
+                question: "Which is the smallest country in the world?",
+                options: ["Monaco", "Vatican City", "San Marino", "Liechtenstein"],
+                correct: 1
+            },
+            {
+                question: "What does 'HTML' stand for?",
+                options: ["Hypertext Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlink and Text Markup Language"],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;  // initialised the all values
+        let score = 0;
+        let hearts = 5;
+        let selectedOption = -1;
+
+        function startGame() {  // intialising the values
+            currentQuestion = 0;
+            score = 0;
+            hearts = 5;
+            selectedOption = -1;
+            updateHeartsDisplay();  // for hearts
+            updateScore();  // for score
+            displayQuestion();  // to show the question
+            document.getElementById('gameArea').style.display = 'block';  
+            document.getElementById('resultScreen').style.display = 'none';  // hides the result page
+        }
+
+        function displayQuestion() {  // 1
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = q.question;  // to print the question
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;  // to update the question number
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            selectedOption = -1;
+        }
+
+        function selectOption(index) {
+            if (selectedOption !== -1) return; // Prevent multiple selections
+            
+            selectedOption = index;
+            const options = document.querySelectorAll('.option');
+            const correctIndex = questions[currentQuestion].correct;
+            
+            // Show selected option
+            options[index].classList.add('selected');
+            
+            setTimeout(() => {
+                // Show correct answer
+                options[correctIndex].classList.add('correct');
+                
+                // If wrong answer, show it in red
+                if (index !== correctIndex) {
+                    options[index].classList.remove('selected');
+                    options[index].classList.add('wrong');
+                    loseHeart();
+                    showFeedback(false);
+                    // Add shake effect to the container
+                    document.querySelector('.game-container').classList.add('shake');
+                    setTimeout(() => {
+                        document.querySelector('.game-container').classList.remove('shake');
+                    }, 600);
+                } else {
+                    score += 10;
+                    updateScore();
+                    showFeedback(true);
+                    // Add heart beat effect to all hearts
+                    document.querySelectorAll('.heart:not(.lost)').forEach(heart => {
+                        heart.classList.add('beating');
+                        setTimeout(() => heart.classList.remove('beating'), 600);
+                    });
+                }
+                
+                // Disable all options
+                options.forEach(option => option.classList.add('disabled'));
+                
+                // Show next button
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                
+                // Check if game should end
+                if (hearts === 0) {
+                    setTimeout(() => endGame(), 2000);
+                }
+            }, 500);
+        }
+
+        function showFeedback(isCorrect) {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                feedback.textContent = '🎉 Correct! Well done!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `💔 Wrong! The correct answer was: ${questions[currentQuestion].options[questions[currentQuestion].correct]}`;
+                feedback.className = 'feedback wrong';
+            }
+        }
+
+        function loseHeart() {
+            if (hearts > 0) {
+                hearts--;
+                updateHeartsDisplay();
+            }
+        }
+
+        function updateHeartsDisplay() {
+            const heartElements = document.querySelectorAll('.heart');
+            heartElements.forEach((heart, index) => {
+                if (index >= hearts) {
+                    heart.classList.add('lost');
+                } else {
+                    heart.classList.remove('lost');
+                }
+            });
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length || hearts === 0) {
+                endGame();
+            } else {
+                displayQuestion();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            const resultTitle = document.getElementById('resultTitle');
+            const finalScore = document.getElementById('finalScore');
+            
+            if (hearts === 0) {
+                resultTitle.textContent = 'Game Over!';
+                resultTitle.style.color = '#e53e3e';
+            } else {
+                resultTitle.textContent = '🎉 Quiz Complete!';
+                resultTitle.style.color = '#48bb78';
+            }
+            
+            const percentage = Math.round((score / (questions.length * 10)) * 100);
+            finalScore.innerHTML = `
+                <div>Final Score: <strong>${score}/${questions.length * 10}</strong></div>
+                <div>Percentage: <strong>${percentage}%</strong></div>
+                <div>Hearts Remaining: <strong>${hearts}/5</strong></div>
+            `;
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // Start the game when page loads
+        window.onload = startGame;
+    </script> -->
+
+    <script src="quiz.script"></script>
+</body>
+</html>
