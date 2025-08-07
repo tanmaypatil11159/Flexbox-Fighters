@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning-German</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #131f24;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .game-container {
+        background: rgba(68, 68, 68, 0);
+        border-radius: 20px;
+        color: rgb(0, 0, 0);
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        text-align: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .game-header {
+        margin-bottom: 30px;
+      }
+
+      .game-title {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 10px;
+      }
+
+      .hearts-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .line {
+        background-color: #37464f;
+        height: 2px;
+        width: 100%;
+      }
+
+      .heart {
+        font-size: 2rem;
+        color: #e53e3e;
+        transition: all 0.3s ease;
+      }
+
+      .heart img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .heart.lost img {
+        opacity: 0.3;
+      }
+
+      .score-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 25px;
+        font-weight: bold;
+        color: white;
+      }
+
+      .question-container {
+        background: #6c6f7100;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        color: black;
+      }
+
+      .question {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: white;
+        line-height: 1.5;
+      }
+
+      .options {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .option {
+        background: #37464f;
+        border: 2px solid #787878;
+        border-radius: 12px;
+        color: white;
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .option:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .option.selected {
+        background: linear-gradient(135deg, #4fb0ff 0%, #3182ce 100%);
+        color: white;
+        border-color: #50a2ff;
+      }
+
+      .option.correct {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border-color: #2f855a;
+      }
+
+      .option.incorrect {
+        background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+        color: white;
+        border-color: #9b2c2c;
+      }
+
+      .option.disabled {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .input-answer {
+        background: #37464f;
+        border: 2px solid #787878;
+        border-radius: 12px;
+        color: white;
+        padding: 15px 20px;
+        font-size: 1rem;
+        width: 100%;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .input-answer::placeholder {
+        color: #a0aec0;
+      }
+
+      .input-answer:focus {
+        border-color: #4fb0ff;
+        box-shadow: 0 0 10px rgba(79, 176, 255, 0.3);
+      }
+
+      .next-btn {
+        background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: none;
+      }
+
+      .next-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+      }
+
+      .result-screen {
+        display: none;
+        text-align: center;
+      }
+
+      .result-title {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: white;
+      }
+
+      .final-score {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+        color: #a6a1a1;
+      }
+
+      .score-details {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 20px 0;
+      }
+
+      .score-detail {
+        text-align: center;
+      }
+
+      .score-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      .restart-btn {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .restart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+      }
+
+      .feedback {
+        margin: 15px 0;
+        font-weight: bold;
+        font-size: 1.1rem;
+        padding: 10px;
+        border-radius: 8px;
+        display: none;
+      }
+
+      .feedback.correct {
+        background: #c6f6d5;
+        color: #22543d;
+        border: 1px solid #9ae6b4;
+      }
+
+      .feedback.wrong {
+        background: #fed7d7;
+        color: #742a2a;
+        border: 1px solid #feb2b2;
+      }
+
+      @keyframes heartBeat {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+      }
+
+      .heart.beating {
+        animation: heartBeat 0.6s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+      }
+
+      .shake {
+        animation: shake 0.6s ease-in-out;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="game-container">
+      <div class="game-header">
+        <h1 class="game-title">GERMAN WITH LANGSY</h1>
+        <div class="hearts-container" id="heartsContainer">
+          <span class="heart">
+            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg" />
+          </span>
+          <span class="heart">
+            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg" />
+          </span>
+          <span class="heart">
+            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg" />
+          </span>
+          <span class="heart">
+            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg" />
+          </span>
+          <span class="heart">
+            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg" />
+          </span>
+        </div>
+
+        <div class="score-info">
+          <span>Question: <span id="questionNumber">1</span></span>
+          <span>Score: <span id="score">0</span></span>
+        </div>
+
+        <div class="line"></div>
+      </div>
+
+      <div id="gameArea">
+        <div class="question" id="question"></div>
+        <div class="question-container">
+          <div class="options" id="options"></div>
+          <div class="feedback" id="feedback"></div>
+          <button class="next-btn" id="nextBtn">Next Question</button>
+        </div>
+      </div>
+
+      <div class="result-screen" id="resultScreen">
+        <h2 class="result-title" id="resultTitle"></h2>
+        <div class="final-score" id="finalScore"></div>
+        <button class="restart-btn" onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+
+    <script>
+      let currentQuestion = 0;
+      let score = 0;
+      let hearts = 5;
+      let answered = false;
+      let Correct = new Audio('correct.mp3');
+      let wrong = new Audio('wrong.mp3');
+      let win = new Audio('win.mp3');
+      let gameOver = new Audio('gameOver.mp3');
+
+      const quizQuestions = [
+        {
+          type: "multiple-choice",
+          question: 'What is the German word for "house"?',
+          options: ["Das Auto", "Das Haus", "Der Baum", "Die Katze"],
+          correct: 1,
+          explanation: 'Das Haus means "house" in German.',
+        },
+        {
+          type: "fill-blank",
+          question: 'Complete the sentence: "Ich _____ Deutsch." (I speak German)',
+          answer: "spreche",
+          explanation: '"Spreche" is the first person singular form of "sprechen" (to speak).',
+        },
+        {
+          type: "multiple-choice",
+          question: 'Which article goes with "Mädchen" (girl)?',
+          options: ["der", "die", "das", "den"],
+          correct: 2,
+          explanation: '"Das Mädchen" - Mädchen is neuter in German, despite referring to a girl.',
+        },
+        {
+          type: "translation",
+          question: 'Translate to German: "Good morning"',
+          answer: "guten morgen",
+          explanation: '"Guten Morgen" is the standard German greeting for good morning.',
+        },
+        {
+          type: "multiple-choice",
+          question: 'What does "Entschuldigung" mean?',
+          options: ["Thank you", "Excuse me/Sorry", "Hello", "Goodbye"],
+          correct: 1,
+          explanation: '"Entschuldigung" means "excuse me" or "sorry" in German.',
+        },
+        {
+          type: "fill-blank",
+          question: 'Fill in: "Wie _____ Sie?" (How are you? - formal)',
+          answer: "geht es",
+          explanation: '"Wie geht es Ihnen?" is the formal way to ask "How are you?"',
+        },
+        {
+          type: "multiple-choice",
+          question: 'Which is the correct plural of "das Kind" (child)?',
+          options: ["die Kinds", "die Kinder", "die Kinden", "das Kinder"],
+          correct: 1,
+          explanation: 'The plural of "das Kind" is "die Kinder".',
+        },
+        {
+          type: "translation",
+          question: 'Translate: "I would like a coffee"',
+          answer: "ich hätte gern einen kaffee",
+          explanation: '"Ich hätte gern einen Kaffee" is a polite way to order coffee.',
+        },
+        {
+          type: "multiple-choice",
+          question: 'What is the German word for "beautiful"?',
+          options: ["hässlich", "klein", "schön", "groß"],
+          correct: 2,
+          explanation: '"Schön" means beautiful in German.',
+        },
+        {
+          type: "fill-blank",
+          question: 'Complete: "Es _____ mir leid." (I am sorry)',
+          answer: "tut",
+          explanation: '"Es tut mir leid" is how you say "I am sorry" in German.',
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const nextBtn = document.getElementById("nextBtn");
+        nextBtn.addEventListener("click", nextQuestion);
+        
+        updateHeartsDisplay();
+        updateScore();
+        displayQuestion();
+      });
+
+      function displayQuestion() {
+        document.getElementById("feedback").style.display = "none";
+        document.getElementById("nextBtn").style.display = "none";
+        
+        document.getElementById("questionNumber").textContent = `${currentQuestion + 1}/${quizQuestions.length}`;
+        
+        const Q = quizQuestions[currentQuestion];
+        document.getElementById("question").textContent = Q.question;
+
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+
+        if (Q.type === "multiple-choice") {
+          Q.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.className = "option";
+            button.innerHTML = `${String.fromCharCode(65 + index)}. ${option}`;
+            button.onclick = () => selectAnswer(index);
+            optionsContainer.appendChild(button);
+          });
+        } else if (Q.type === "fill-blank" || Q.type === "translation") {
+          const input = document.createElement("input");
+          input.type = "text";
+          input.id = "textAnswer";
+          input.className = "input-answer";
+          input.placeholder = "Type your answer here...";
+          input.addEventListener("keypress", handleKeyPress);
+          optionsContainer.appendChild(input);
+          
+          // Focus on the input
+          setTimeout(() => input.focus(), 100);
+        }
+
+        answered = false;
+      }
+
+      function selectAnswer(selectedIndex) {
+        if (answered) return;
+
+        const Q = quizQuestions[currentQuestion];
+        const options = document.querySelectorAll(".option");
+
+        if (selectedIndex === Q.correct) {
+          score += 10;
+          options[selectedIndex].classList.add("correct");
+          showFeedback(true, Q.explanation);
+          Correct.play();
+        } else {
+          wrong.play();
+          hearts--;
+          updateHeartsDisplay();
+          options[selectedIndex].classList.add("incorrect");
+          options[Q.correct].classList.add("correct");
+          showFeedback(false, Q.explanation);
+        }
+
+        options.forEach(option => {
+          option.disabled = true;
+          option.style.pointerEvents = "none";
+        });
+
+        answered = true;
+        updateScore();
+        document.getElementById("nextBtn").style.display = "inline-block";
+
+        if (hearts <= 0) {
+          setTimeout(showFinalResults, 1500);
+        }
+      }
+
+      function checkTextAnswer() {
+        if (answered) return;
+
+        const textInput = document.getElementById("textAnswer");
+        if (!textInput) return;
+
+        const userAnswer = textInput.value.trim().toLowerCase();
+        const Q = quizQuestions[currentQuestion];
+        const correctAnswer = Q.answer.toLowerCase();
+
+        if (!userAnswer) {
+          alert("Please enter an answer!");
+          return;
+        }
+
+        const isCorrect = userAnswer.includes(correctAnswer) || 
+               correctAnswer.includes(userAnswer) || 
+               userAnswer === correctAnswer;
+
+        if (isCorrect) {
+          Correct.play();
+          score += 10;
+          textInput.style.borderColor = "#4CAF50";
+          textInput.style.backgroundColor = "rgba(76, 175, 80, 0.2)";
+          showFeedback(true, Q.explanation);
+        } else {
+          wrong.play();
+          hearts--;
+          updateHeartsDisplay();
+          textInput.style.borderColor = "#f44336";
+          textInput.style.backgroundColor = "rgba(244, 67, 54, 0.2)";
+          showFeedback(false, `${Q.explanation} The correct answer is: "${Q.answer}"`);
+        }
+
+        textInput.disabled = true;
+        answered = true;
+        updateScore();
+        document.getElementById("nextBtn").style.display = "inline-block";
+
+        if (hearts <= 0) {
+          setTimeout(showFinalResults, 1500);
+        }
+      }
+
+      function handleKeyPress(event) {
+        if (event.key === "Enter") {
+          checkTextAnswer();
+        }
+      }
+
+      function nextQuestion() {
+        if (!answered && (quizQuestions[currentQuestion].type === "fill-blank" || 
+                         quizQuestions[currentQuestion].type === "translation")) {
+          checkTextAnswer();
+          return;
+        }
+
+        if (!answered) {
+          alert("Please answer the question first!");
+          return;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < quizQuestions.length && hearts > 0) {
+          displayQuestion();
+        } else {
+          showFinalResults();
+        }
+      }
+
+      function showFeedback(isCorrect, explanation) {
+        const feedbackEl = document.getElementById("feedback");
+        feedbackEl.className = `feedback ${isCorrect ? "correct" : "wrong"}`;
+        feedbackEl.innerHTML = `
+          <strong>${isCorrect ? "Correct!" : "Incorrect!"}</strong><br>
+          ${explanation}
+        `;
+        feedbackEl.style.display = "block";
+
+        if (!isCorrect) {
+          document.querySelector('.game-container').classList.add('shake');
+          setTimeout(() => {
+            document.querySelector('.game-container').classList.remove('shake');
+          }, 500);
+        }
+      }
+
+      function showFinalResults() {
+        const percentage = Math.round((score / (quizQuestions.length * 10)) * 100);
+        let performance = "";
+
+        if (percentage >= 90) performance = "Ausgezeichnet! (Excellent!)";
+        else if (percentage >= 70) performance = "Gut gemacht! (Well done!)";
+        else if (percentage >= 50) performance = "Nicht schlecht! (Not bad!)";
+        else performance = "Weiter üben! (Keep practicing!)";
+
+        document.getElementById("gameArea").style.display = "none";
+        const resultScreen = document.getElementById("resultScreen");
+        resultScreen.style.display = "block";
+
+        document.getElementById("resultTitle").textContent = performance;
+        document.getElementById("finalScore").innerHTML = `
+          <div class="score-details">
+            <div class="score-detail">
+              <div class="score-number">${score}</div>
+              <p>Points</p>
+            </div>
+            <div class="score-detail">
+              <div class="score-number">${percentage}%</div>
+              <p>Accuracy</p>
+            </div>
+          </div>
+          <p>You answered ${score/10} out of ${quizQuestions.length} questions correctly!</p>
+        `;
+      }
+
+      function updateHeartsDisplay() {
+        const heartElements = document.querySelectorAll("#heartsContainer .heart");
+        heartElements.forEach((heartEl, index) => {
+          const img = heartEl.querySelector('img');
+          if (index < hearts) {
+            heartEl.classList.remove("lost");
+            img.style.opacity = "1";
+          } else {
+            heartEl.classList.add("lost");
+            img.style.opacity = "0.3";
+          }
+        });
+
+        if (hearts < 5) {
+          const lastHeart = heartElements[hearts];
+          if (lastHeart) {
+            lastHeart.classList.add("beating");
+            setTimeout(() => lastHeart.classList.remove("beating"), 600);
+          }
+        }
+      }
+
+      function updateScore() {
+        document.getElementById("score").textContent = score;
+      }
+
+      function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      }
+
+      function restartGame() {
+        currentQuestion = 0;
+        score = 0;
+        hearts = 5;
+        answered = false;
+        
+        // Shuffle questions for variety
+        for (let i = quizQuestions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [quizQuestions[i], quizQuestions[j]] = [quizQuestions[j], quizQuestions[i]];
+        }
+        
+        document.getElementById("gameArea").style.display = "block";
+        document.getElementById("resultScreen").style.display = "none";
+        updateHeartsDisplay();
+        updateScore();
+        displayQuestion();
+      }
+    </script>
+  </body>
+</html>

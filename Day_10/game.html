@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning-German</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #131f24;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            background: rgba(68, 68, 68, 0);
+            border-radius: 20px;
+            color: rgb(0, 0, 0);
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-header {
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            color: linear-gradient(to left, #00f0ff, #9604ff, #ff00d4, #0081f2, #00f0ff);
+            margin-bottom: 10px;
+        }
+
+        .hearts-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .line {
+            background-color: #37464f;
+            height: 2px;
+            width: 100%;
+        }
+
+        .heart {
+            font-size: 2rem;
+            color: #e53e3e;
+            transition: all 0.3s ease;
+        }
+
+        .heart.lost {
+            transform: scale(0);
+        }
+
+        .score-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .question-container {
+            background: #6c6f7100;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            color: black;
+        }
+
+        .question {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #000000;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: #37464f;
+            border: 2px solid #787878;
+            border-radius: 12px;
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            transform: translateY(2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #4fb0ff 0%, #3182ce 100%);
+            color: white;
+            border-color: #50a2ff;
+        }
+
+        /* for correct */
+        .option.correct {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border-color: #2f855a;
+        }
+
+        /* for wrong */
+        .option.wrong {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            border-color: #9b2c2c;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+        }
+
+        .result-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .final-score {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #a6a1a1;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+        }
+
+        .feedback {
+            margin: 15px 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .feedback.wrong {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.5);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .heart.beating {
+            animation: heartBeat 0.6s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.6s ease-in-out;
+        }
+
+        .drag-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .drag-now {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 2px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .drag-now.correct {
+            border-color: #38a169;
+            background-color: #c6f6d5;
+        }
+
+        .drag-now.wrong {
+            border-color: #e53e3e;
+            background-color: #fed7d7;
+        }
+
+        .kanji-label {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .draggable {
+            padding: 6px 10px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            background-color: #edf2f7;
+            cursor: grab;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <!-- part 1 -->
+            <div id="lottie-animation"></div>
+            <h1 class="game-title" style="color: white;">JAPANESE WITH LANGSY</h1>
+            <div class="hearts-container" id="heartsContainer">
+                <span class="heart"><img
+                        src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img
+                        src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img
+                        src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img
+                        src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+                <span class="heart"><img
+                        src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"></span>
+            </div>
+
+
+            <div id="dragDropArea" style="display:none;">
+                <h2>Match the Kanji with its Meaning</h2>
+                <div id="dragContainer" class="drag-section"></div>
+                <button onclick="checkDragAnswers()">Submit Matches</button>
+            </div>
+
+
+            <div class="score-info">
+                <span>Question: <span id="questionNumber">1</span></span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+
+            <div class="line"></div>
+        </div>
+        <!-- part 2 -->
+        <div id="gameArea">
+            <div style="color: white;" class="question" id="question"></div>
+            <div class="question-container">
+                <div class="options" id="options"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+            </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h2 class="result-title" id="resultTitle"></h2>
+            <div class="final-score" id="finalScore"></div>
+            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // quiz.js
+
+// TOTAL MULTIPLE‐CHOICE QUESTIONS
+const totalMCQuestions = 4;
+
+// DRAG‐AND‐DROP ITEMS
+const dragItems = [
+  { kanji: "水", meaning: "Water" },
+  { kanji: "火", meaning: "Fire" },
+  { kanji: "木", meaning: "Tree" },
+  { kanji: "金", meaning: "Gold" },
+];
+
+// GAME STATE
+let isDragAndDropPhase = false;
+let currentQuestion = 0;
+let score = 0;
+let hearts = 5;
+let selectedOption = -1;
+
+// UTILITY: grab reusable DOM nodes
+const gameArea = document.getElementById("gameArea");
+const dragDropArea = document.getElementById("dragDropArea");
+const resultScreen = document.getElementById("resultScreen");
+const questionEl = document.getElementById("question");
+const questionNumEl = document.getElementById("questionNumber");
+const optionsContainer = document.getElementById("options");
+const feedbackEl = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+const heartsEls = document.querySelectorAll("#heartsContainer .heart img");
+const scoreEl = document.getElementById("score");
+const dragContainer = document.getElementById("dragContainer");
+
+// START THE GAME
+function startGame() {
+  isDragAndDropPhase = false;
+  currentQuestion = 0;
+  score = 0;
+  hearts = 5;
+  selectedOption = -1;
+
+  updateHeartsDisplay();
+  updateScore();
+  showPhase("quiz");
+  displayQuestion();
+}
+
+// DISPLAY A MULTIPLE-CHOICE QUESTION
+function displayQuestion() {
+  // hide feedback & next button
+  feedbackEl.style.display = "none";
+  nextBtn.style.display = "none";
+  selectedOption = -1;
+
+  // update header
+  questionNumEl.textContent = `${currentQuestion + 1}/${totalMCQuestions}`;
+
+  fetch("https://kanjiapi.dev/v1/kanji/jlpt-5")
+    .then((res) => res.json())
+    .then((list) => list.sort(() => Math.random() - 0.5).slice(0, 4))
+    .then((choices) =>
+      Promise.all(
+        choices.map((k) =>
+          fetch(`https://kanjiapi.dev/v1/kanji/${k}`).then((r) => r.json())
+        )
+      )
+    )
+    .then((data) => {
+      const questionData = data[0];
+      const correctMeaning = questionData.meanings[0];
+      const opts = data.map((d) => d.meanings[0]);
+      const shuffled = opts.sort(() => Math.random() - 0.5);
+      const correctIndex = shuffled.indexOf(correctMeaning);
+
+      // render question
+      questionEl.textContent = `What does "${questionData.kanji}" mean?`;
+
+      // render options
+      optionsContainer.innerHTML = "";
+      shuffled.forEach((opt, i) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.textContent = `${String.fromCharCode(65 + i)}. ${opt}`;
+        div.onclick = () => selectOption(i, correctIndex, shuffled);
+        optionsContainer.appendChild(div);
+      });
+    })
+    .catch(console.error);
+}
+
+// HANDLE AN OPTION CLICK
+function selectOption(idx, correctIdx, opts) {
+  if (selectedOption !== -1) return;
+  selectedOption = idx;
+
+  const allOpts = document.querySelectorAll(".option");
+  allOpts.forEach((o) => o.classList.add("disabled"));
+  allOpts[correctIdx].classList.add("correct");
+
+  if (idx === correctIdx) {
+    score += 10;
+    updateScore();
+    showFeedback(true);
+  } else {
+    allOpts[idx].classList.add("wrong");
+    loseHeart();
+    showFeedback(false, opts[correctIdx]);
+  }
+
+  nextBtn.style.display = "inline-block";
+
+  if (hearts === 0) {
+    setTimeout(endGame, 1000);
+  }
+}
+
+// FEEDBACK MESSAGE
+function showFeedback(isCorrect, correctAns = "") {
+  feedbackEl.style.display = "block";
+  if (isCorrect) {
+    feedbackEl.textContent = "🎉 Correct!";
+    feedbackEl.className = "feedback correct";
+  } else {
+    feedbackEl.textContent = `💔 Wrong! Answer: ${correctAns}`;
+    feedbackEl.className = "feedback wrong";
+  }
+}
+
+// LOSE A HEART
+function loseHeart() {
+  if (hearts > 0) hearts--;
+  updateHeartsDisplay();
+}
+
+// UPDATE HEART ICONS
+function updateHeartsDisplay() {
+  heartsEls.forEach((img, i) => {
+    img.style.opacity = i < hearts ? "1" : "0.2";
+  });
+}
+
+// UPDATE SCORE DISPLAY
+function updateScore() {
+  scoreEl.textContent = score;
+}
+
+// NEXT QUESTION / PHASE SWITCH
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion >= totalMCQuestions && !isDragAndDropPhase) {
+    isDragAndDropPhase = true;
+    startDragAndDropPhase();
+  } else if (!isDragAndDropPhase) {
+    displayQuestion();
+  }
+}
+
+// BEGIN DRAG‐AND‐DROP PHASE
+function startDragAndDropPhase() {
+  showPhase("drag");
+  createDragDropQuiz();
+}
+
+// BUILD THE DRAG ITEMS
+function createDragDropQuiz() {
+  dragContainer.innerHTML = "";
+  const shuffled = dragItems
+    .map((i) => i.meaning)
+    .sort(() => Math.random() - 0.5);
+
+  dragItems.forEach((item, i) => {
+    const row = document.createElement("div");
+    row.className = "drag-now";
+    row.dataset.index = i;
+    row.innerHTML = `
+      <span class="kanji-label">${item.kanji}</span>
+      <div class="draggable" draggable="true">${shuffled[i]}</div>
+    `;
+    dragContainer.appendChild(row);
+    addDragEvents(row);
+  });
+}
+
+let dragStartIndex = null;
+function addDragEvents(row) {
+  const dragEl = row.querySelector(".draggable");
+  row.addEventListener("dragover", (e) => e.preventDefault());
+
+  dragEl.addEventListener("dragstart", () => {
+    dragStartIndex = +row.dataset.index;
+  });
+  row.addEventListener("drop", () => {
+    const dragEndIndex = +row.dataset.index;
+    swapDragItems(dragStartIndex, dragEndIndex);
+  });
+}
+
+function swapDragItems(from, to) {
+  const one = dragContainer.children[from].querySelector(".draggable");
+  const two = dragContainer.children[to].querySelector(".draggable");
+  dragContainer.children[from].appendChild(two);
+  dragContainer.children[to].appendChild(one);
+}
+
+// CHECK DRAGGED ANSWERS
+function checkDragAnswers() {
+  const rows = dragContainer.querySelectorAll(".drag-now");
+  rows.forEach((row, i) => {
+    const given = row.querySelector(".draggable").textContent.trim();
+    const correct = dragItems[i].meaning;
+    if (given === correct) {
+      row.classList.add("correct");
+      score += 5;
+      updateScore();
+    } else {
+      row.classList.add("wrong");
+      loseHeart();
+    }
+  });
+  setTimeout(endGame, 1000);
+}
+
+// END THE GAME & SHOW RESULTS
+function endGame() {
+  showPhase("result");
+  const titleEl = document.getElementById("resultTitle");
+  const finalEl = document.getElementById("finalScore");
+
+  if (hearts === 0) {
+    titleEl.textContent = "Game Over!";
+    titleEl.style.color = "#e53e3e";
+  } else {
+    titleEl.textContent = "🎉 All Done!";
+    titleEl.style.color = "#48bb78";
+  }
+
+  const maxMCScore = totalMCQuestions * 10;
+  const percent = Math.round(
+    (score / (maxMCScore + dragItems.length * 5)) * 100
+  );
+
+  finalEl.innerHTML = `
+    <div>Score: <strong>${score}/${
+    maxMCScore + dragItems.length * 5
+  }</strong></div>
+    <div>Percentage: <strong>${percent}%</strong></div>
+    <div>Hearts Left: <strong>${hearts}/5</strong></div>
+  `;
+}
+
+// RESTART
+function restartGame() {
+  startGame();
+}
+
+// PHASE TOGGLER
+function showPhase(phase) {
+  gameArea.style.display = phase === "quiz" ? "block" : "none";
+  dragDropArea.style.display = phase === "drag" ? "block" : "none";
+  resultScreen.style.display = phase === "result" ? "block" : "none";
+}
+
+// EXPOSE INLINE HANDLERS (only needed if you ever switch to addEventListener)
+window.nextQuestion = nextQuestion;
+window.checkDragAnswers = checkDragAnswers;
+window.restartGame = restartGame;
+
+// INIT
+window.onload = startGame;
+
+    </script>
+</body>
+
+</html>
