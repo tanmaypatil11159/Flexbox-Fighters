@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 23px 30px;
+        background-color: #0d0d0d;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        opacity: 0.8;
+    }
+
+    #menu-toggle:checked+.hamburger+nav .nav-links {
+        display: flex;
+    }
+
+    .logo {
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+    }
+
+    nav {
+        position: relative;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 60px;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        /* to hide the underlines*/
+        color: #ccc;
+        font-weight: 500;
+        padding-bottom: 4px;
+        transition: color 1s;
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover {
+        color: #fff;
+        border-bottom: 2px solid #fff;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+
+    }
+
+    #menu-toggle {
+        display: none;
+    }
+
+
+    .hamburger {
+        display: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: white;
+    }
+
+
+    @media (max-width: 768px) {
+        header {
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .hamburger {
+            display: block;
+        }
+
+        nav {
+            width: 100%;
+        }
+
+        .nav-links {
+            flex-direction: column;
+            align-items: flex-start;
+            background: #18121e94;
+            border-radius: 10px;
+            border: none;
+            width: 100%;
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-top: 1px solid #22222200;
+            box-shadow: 5px 5px #00000075;
+            transition: all 0.3s ease;
+        }
+    }
+
+    .gradient-text {
+        background: linear-gradient(to left, #00f0ff, #9604ff, #ff00d4, #0081f2, #00f0ff);
+        background-clip: text;
+        background-size: 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 3s linear infinite;
+    }
+
+    .se2 {
+        min-height: 100vh;
+        padding: 0;
+        background: linear-gradient(135deg, rgba(0, 238, 255, 0.515), rgba(150, 4, 255, 0.51));
+        background-color: black;
+        overflow-x: hidden;
+        box-sizing: border-box;
+
+    }
+
+    .contact {
+        display: flex;
+        flex-direction: column;
+        padding: 2cqb;
+        gap: 30px;
+        max-width: 100%;
+    }
+
+    .contact1 {
+        background-color: #ffffff33;
+        border: none;
+        font-family: sans-serif;
+        border-radius: 5px;
+        color: rgb(254, 254, 254);
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        border-radius: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+
+
+    .contact2 {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+
+    .Box1,
+    .Box2 {
+        border: none;
+        border-radius: 20px;
+        background-color: rgba(241, 241, 241, 0.468);
+        height: 30vh;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 15px;
+        box-sizing: border-box;
+        max-width: 350px;
+    }
+
+    .c {
+        padding: 10px;
+        background-color: #ffffff4a;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .submit {
+        border-radius: 50px;
+        background-image: linear-gradient(to bottom right, rgb(33, 174, 255), rgb(183, 0, 255));
+        padding: 15px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        color: white;
+        font-weight: 500;
+    }
+
+    .submit:hover {
+        background-color: #005ecb;
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 140, 255, 0.4);
+    }
+
+    .op {
+        background-color: white;
+        color: rgb(255, 255, 255);
+    }
+
+    .image {
+        width: 50px;
+        height: 50px;
+    }
+
+    .c1 {
+        padding: 15px;
+        background-image: linear-gradient(to bottom right, rgb(33, 174, 255), rgb(183, 0, 255));
+        color: white;
+        border: none;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .c1:hover {
+        background-color: #005ecb;
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 140, 255, 0.4);
+    }
+
+    .con {
+        font-family: sans-serif;
+        color: rgb(255, 255, 255);
+    }
+
+    /* Responsiveness of contact page */
+
+    @media (max-width: 768px) {
+        .contact {
+            flex-direction: column;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        .contact1,
+        .contact2 {
+            width: 100%;
+            height: auto;
+        }
+
+        .contact2 {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .Box1,
+        .Box2 {
+            width: 45%;
+            min-width: 150px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            height: auto;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .image {
+            width: 40px;
+            height: 40px;
+        }
+
+        .c1 {
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .con {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .submit {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+
+    }
+
+    @media (max-width: 480px) {
+        .contact {
+            flex-direction: column;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        .contact1 {
+            width: 100%;
+        }
+
+        .contact2 {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .Box1,
+        .Box2 {
+            width: 90%;
+            height: auto;
+            padding: 20px;
+        }
+
+        .c1 {
+            width: 100%;
+            font-size: 1rem;
+            padding: 12px;
+            text-align: center;
+        }
+    }
+
+
+
+    @keyframes float1 {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float2 {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(10px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .floating-div1 {
+        position: relative;
+        animation: float1 3s ease-in-out infinite;
+    }
+
+    .floating-div2 {
+        position: relative;
+        animation: float2 3s ease-in-out infinite;
+    }
+    @media (min-width: 768px) {
+  .contact {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 60px;
+    gap: 40px;
+  }
+
+  .contact1 {
+    width: 60%;
+    max-width: 600px;
+  }
+
+  .contact2 {
+    width: 35%;
+    display: flex;
+    flex-direction: column; 
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .Box1, .Box2 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+</style>
+
+<body>
+
+    <section class="se2 exception" id="Contact">
+
+        <header>
+            <div class="logo">
+                <div class="logo gradient-text">Langsy</div>
+            </div>
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" class="hamburger">&#9776;</label>
+            <nav>
+                <ul class="nav-links">
+                    <li><a onclick="window.location.href='Home.html'" href="#">Home</a></li>
+                    <li><a onclick="window.location.href='About.html'" href="#">About Us</a></li>
+                    <li><a onclick="window.location.href='course.html'" href="#" href="#">Courses</a></li>
+                    <li><a href="#">Test</a></li>
+                    <li><a href="#" class="active">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="contact">
+            <div class="contact1">
+                <h2>Contact Form</h2>
+                <label for="name">
+                    Name <span style="color: red">*</span>
+                </label>
+                <input class="c" type="text" id="name" name="name" placeholder="Name" required>
+                <label for="email">
+                    Email address <span style="color: red">*</span>
+                </label>
+                <input class="c" type="email" id="email" name="Email" placeholder="E-mail address" required>
+                <label for="phone">
+                    Contact no. <span style="color: red">*</span>
+                </label>
+                <input class="c" type="tel" id="phone" name="phone" placeholder="Contact no." required>
+                <label for="language">
+                    Preferred Language <span style="color: red">*</span>
+                </label>
+                <select class="c" id="language" name="language" required>
+                    <option class="c op" value="" hidden selected>Select one</option>
+                    <option class="c op" value="german">German</option>
+                    <option class="c op" value="japanese">Japanese</option>
+                </select>
+                <label for="message">
+                    Message (optional)
+                </label>
+                <textarea class="c" rows="6" cols="50" name="message" id="message"
+                    placeholder="Your message"></textarea>
+                <button class="submit" type="submit">Send Message</button>
+            </div>
+
+            <div class="contact2">
+                <div class=" floating-div1 Box1">
+                    <img class="image" src="https://img.icons8.com/?size=100&id=9730&format=png&color=1A1A1A" alt="">
+                    <div class="con">Have a question? Let's talk!</div>
+                    <button class="c1">‪+91-98765-43210‬</button>
+                </div>
+                <div class=" floating-div2 Box2">
+                    <img class="image" src="https://img.icons8.com/?size=100&id=85022&format=png&color=1A1A1A" alt="">
+                    <div class="con">Reach out via email.</div>
+                    <button class="c1">support@langsy.com</button>
+                </div>
+            </div>
+        </div>
+          
+    </section>
+
+</body>
+
+</html>

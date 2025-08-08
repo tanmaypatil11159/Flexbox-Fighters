@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Langsy-Japanese</title>
+</head>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", sans-serif;
+    /* background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); */
+    min-height: 100vh;
+    color: white;
+    background: linear-gradient(135deg,
+        rgba(0, 238, 255, 0.515),
+        rgba(150, 4, 255, 0.51));
+    line-height: 1.6;
+  }
+
+  body {
+    background-color: rgb(0, 0, 0);
+    z-index: 0;
+  }
+
+  .container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  #bar {
+    z-index: 99;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 23px 30px;
+    background-color: rgba(13, 13, 13, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease;
+  }
+
+  #menu-toggle:checked+.hamburger+nav .nav-links {
+    display: flex;
+  }
+
+  .logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+  }
+
+  nav {
+    position: relative;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 60px;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    /* to hide the underlines*/
+    color: #ccc;
+    font-weight: 500;
+    padding-bottom: 4px;
+    transition: color 1s;
+  }
+
+  .nav-links a.active,
+  .nav-links a:hover {
+    color: #fff;
+    border-bottom: 2px solid #fff;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #menu-toggle {
+    display: none;
+  }
+
+  .hamburger {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: white;
+  }
+
+  .gradient-text {
+    background: linear-gradient(to left,
+        #00f0ff,
+        #9604ff,
+        #ff00d4,
+        #0081f2,
+        #00f0ff);
+    background-clip: text;
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: glow 5s linear infinite;
+    font-family: "Baloo 2", cursive;
+  }
+
+  @keyframes glow {
+    to {
+      background-position: 200%;
+    }
+  }
+
+  .header h1 {
+    text-align: center;
+    font-weight: 900;
+    margin-top: 120px;
+    font-size: 40px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .header .description {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    text-align: center;
+    padding: 20px;
+    width: 80%;
+    margin: 40px auto;
+    border-radius: 10px;
+    font-size: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .lessons h2 {
+    font-size: 35px;
+    text-align: center;
+    font-weight: 900;
+    margin-top: 60px;
+  }
+
+  .lessons .lesson {
+    border: 1px solid white;
+    margin-bottom: 30px;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .lesson :hover {
+    cursor: pointer;
+  }
+
+  .lessons .lesson-first {
+    margin-top: 60px;
+  }
+
+  .lessons .lesson .lesson-header {
+    display: flex;
+    position: relative;
+    margin-bottom: 25px;
+    padding-right: 30px;
+  }
+
+  .lessons .lesson .lesson-header h3 {
+    font-size: 24px;
+    width: 100%;
+  }
+
+  .lessons .lesson .lesson-header .lesson-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .lessons .lesson .lesson-header .lesson-toggle.rotate {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .lessons .lesson:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .lesson-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .lesson-list {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .lesson-list li {
+    border: 1px solid white;
+    padding: 1rem;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 600;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .lesson-list li:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    color: #fbbf24;
+  }
+
+  .play img {
+    position: absolute;
+    top: 28%;
+    right: 15%;
+    background: none;
+    border: none;
+    height: 20px;
+  }
+
+  .socials a {
+    margin: 0 10px;
+    font-size: 20px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  .socials a:hover {
+    transform: scale(1.3);
+  }
+
+  /* Simple Media Queries for Mobile Devices */
+  @media screen and (max-width: 800px) {
+    .container_2 {
+      width: 77vw;
+      height: 70vh;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      grid-template-areas: "box";
+    }
+
+    .container {
+      width: 90%;
+      padding: 10px;
+    }
+
+    nav {
+      height: 60px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .header h1 {
+      margin-top: 100px;
+      font-size: 30px;
+    }
+
+    .header .description {
+      width: 90%;
+      padding: 15px;
+      font-size: 18px;
+    }
+
+    .lessons h2 {
+      font-size: 28px;
+    }
+
+    .lessons .lesson {
+      width: 90%;
+      padding: 15px;
+    }
+
+    .lessons .lesson .lesson-header h3 {
+      font-size: 20px;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .container {
+      width: 95%;
+      padding: 5px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .header .description {
+      width: 95%;
+      font-size: 16px;
+    }
+
+    .lessons .lesson {
+      padding: 10px;
+    }
+
+    .lesson-list li {
+      padding: 10px;
+      font-size: 16px;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .lang {
+      font-size: 0.95rem;
+      padding: 8px 12px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .lang {
+      font-size: 1rem;
+      padding: 10px 14px;
+    }
+
+    header {
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .hamburger {
+      display: block;
+    }
+
+    #menu-toggle:checked+.hamburger+nav .nav-links {
+      display: flex;
+    }
+
+    nav {
+      width: 100%;
+      height: 0;
+    }
+
+    body {
+      animation: zoomOut 5s ease forwards;
+      font-family: "Segoe UI", sans-serif;
+      height: 100vh;
+      z-index: -1;
+      color: white;
+      background: linear-gradient(#0000007e), url("bgi.jpg"), contain;
+      object-fit: fill no-repeat;
+    }
+
+    .text {
+      letter-spacing: 50px;
+      font-size: larger;
+      animation: moveAndSqueeze 5s ease-out forwards,
+        glow 5s linear infinite 1s;
+      display: block;
+      background: linear-gradient(to left,
+          #00f0ff,
+          #9604ff,
+          #ff00d4,
+          #0081f2,
+          #00f0ff);
+      background-clip: text;
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      width: 100%;
+    }
+
+    @keyframes moveAndSqueeze {
+      from {
+        letter-spacing: 100px;
+        opacity: 0;
+        padding-left: 50px;
+      }
+
+      to {
+        letter-spacing: 10px;
+        opacity: 1;
+        padding-left: 10px;
+      }
+    }
+
+    .nav-links {
+      flex-direction: column;
+      align-items: flex-start;
+      background: #18121e94;
+      border-radius: 10px;
+      border: none;
+      width: 100%;
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      border-top: 1px solid #22222200;
+      box-shadow: 5px 5px #00000075;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .socials {
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.485);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* effects  */
+  .floating-div1 {
+    position: relative;
+    animation: float1 3s ease-in-out infinite;
+  }
+
+  .floating-div2 {
+    position: relative;
+    animation: float2 3s ease-in-out infinite;
+  }
+
+  .container_2 {
+    width: 59vw;
+    height: 115vh;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-areas: "box";
+    color: white;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0px;
+    font-size: 3vw;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  .box :hover {
+    scale: (10%);
+  }
+
+  .box:hover {
+    color: #ff0000;
+    background-color: rgba(249, 249, 249, 0);
+  }
+
+  @media (max-width: 500px) {
+    .container_2 {
+      width: 77vw;
+      height: 70vh;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      grid-template-areas: "box";
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .container_2 {
+      width: 77vw;
+      height: 110vh;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      grid-template-areas: "box";
+    }
+
+    .box {
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 0px;
+      font-size: 10vw;
+    }
+  }
+
+  audio {
+    display: none;
+  }
+
+  .lesson-list li {
+    cursor: pointer;
+  }
+
+  li:hover {
+    color: red;
+  }
+</style>
+
+<body>
+  <header id="bar">
+    <div class="logo">
+      <div class="logo gradient-text">Langsy</div>
+    </div>
+    <input type="checkbox" id="menu-toggle" />
+    <label for="menu-toggle" class="hamburger">&#9776;</label>
+    <nav id="kk">
+      <ul class="nav-links">
+        <li>
+          <a onclick="window.location.href='Home.html'" href="#">Home</a>
+        </li>
+        <li>
+          <a onclick="window.location.href='About.html'" href="#">About Us</a>
+        </li>
+        <li>
+          <a onclick="window.location.href='3.html'" href="#" href="#" class="active">Courses</a>
+        </li>
+        <li><a href="#">Test</a></li>
+        <li>
+          <a onclick="window.location.href='contact.html'" href="#" href="#">Contact</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="header">
+    <h1 class="gradient-text">Learn Japanese</h1>
+    <div class="description">
+      <div class="animation" style="    display: flex;justify-content: center;">
+        <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+        <dotlottie-wc src="Learning.lottie" speed="1" style="width: 300px; height: 300px" mode="forward" loop
+          autoplay></dotlottie-wc>
+      </div>
+      <p>
+        Unlock the world of Japanese language and culture! Whether you're a
+        complete beginner or looking to sharpen your skills, our interactive
+        lessons will make learning German fun and effective. Start your
+        journey today!
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="lessons">
+      <h2 class="gradient-text">Course Lessons</h2>
+
+      <div class="lesson lesson-first">
+        <div class="lesson-header">
+          <h3>Lesson 1: Counting 1 to 30</h3>
+          <span class="lesson-toggle">▼</span>
+        </div>
+        <div class="lesson-content hidden" id="lesson1-content">
+          <div class="container_2">
+            <div class="box" data-audio="02.mp3">01 : 一</div>
+            <div class="box" data-audio="03.mp3">02 : 二</div>
+            <div class="box" data-audio="04.mp3">03 : 三</div>
+            <div class="box" data-audio="05.mp3">04 : 四</div>
+            <div class="box" data-audio="06.mp3">05 : 五</div>
+            <div class="box" data-audio="07.mp3">06 : 六</div>
+            <div class="box" data-audio="08.mp3">07 : 七</div>
+            <div class="box" data-audio="09.mp3">08 : 八</div>
+            <div class="box" data-audio="10.mp3">09 : 九</div>
+            <div class="box" data-audio="11.mp3">10 : 十</div>
+            <div class="box" data-audio="12.mp3">11 : 十一</div>
+            <div class="box" data-audio="13.mp3">12 : 十二</div>
+            <div class="box" data-audio="14.mp3">13 : 十三</div>
+            <div class="box" data-audio="15.mp3">14 : 十四</div>
+            <div class="box" data-audio="16.mp3">15 : 十五</div>
+            <div class="box" data-audio="17.mp3">16 : 十六</div>
+            <div class="box" data-audio="18.mp3">17 : 十七</div>
+            <div class="box" data-audio="19.mp3">18 : 十八</div>
+            <div class="box" data-audio="20.mp3">19 : 十九</div>
+            <div class="box" data-audio="21.mp3">20 : 二十</div>
+            <div class="box" data-audio="22.mp3">21 : 二十一</div>
+            <div class="box" data-audio="23.mp3">22 : 二十二</div>
+            <div class="box" data-audio="24.mp3">23 : 二十三</div>
+            <div class="box" data-audio="25.mp3">24 : 二十四</div>
+            <div class="box" data-audio="26.mp3">25 : 二十五</div>
+            <div class="box" data-audio="27.mp3">26 : 二十六</div>
+            <div class="box" data-audio="28.mp3">27 : 二十七</div>
+            <div class="box" data-audio="29.mp3">28 : 二十八</div>
+            <div class="box" data-audio="30.mp3">29 : 二十九</div>
+            <div class="box" data-audio="31.mp3">30 : 三十</div>
+          </div>
+          <audio id="audio-player"></audio>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <h3>Lesson 2: Basic Greetings</h3>
+          <span class="lesson-toggle">▼</span>
+        </div>
+        <div class="lesson-content hidden" id="lesson2-content">
+          <ul class="lesson-list" id="Greetings-list">
+            <li data-audio="Good day.mp3">Ohayou gozaimasu (Good morning)</li>
+            <li data-audio="Good morning.mp3">Konbanwa (Good evening )</li>
+            <li data-audio="Good evening.mp3">Konnichiwa (Good afternoon)</li>
+            <li data-audio="Good bye.mp3">Sayounara (Goodbye)</li>
+            <li data-audio="Thank you.mp3">Ogenki desu ka? (How are you?)</li>
+            <li data-audio="Please.mp3">Mata ne (See you later)</li>
+            <li data-audio="hello.mp3">Mata ashita (See you tomorrow)</li>
+            <li data-audio="no.mp3">Īe (No)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson" onclick="window.location.href='japanese.html'">
+        <div class="lesson-header">
+          <h3>Lesson 3: Practice Quiz</h3>
+          <span class="lesson-toggle"></span>
+        </div>
+        <div class="lesson-content hidden" id="lesson3-content">
+          <ul class="lesson-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <footer>
+    <div class="socials">
+      <p>&copy; 2025 German Learning Hub - Student Project</p>
+      <p>Practice makes perfect! Viel Erfolg! (Good luck!)</p>
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".lesson").forEach((lesson) => {
+        lesson.addEventListener("click", () => {
+          const content = lesson.querySelector(".lesson-content");
+          const toggle = lesson.querySelector(".lesson-toggle");
+          content.classList.toggle("hidden");
+          toggle.classList.toggle("rotate");
+        });
+      });
+
+      gsap.to("#bar", {
+        backgroundColor: "rgb(0, 0, 0)",
+        height: "100px",
+        scrollTrigger: {
+          trigger: "#bar",
+          scroller: "body",
+          start: "top -10%",
+          end: "top -11%",
+          scrub: 1,
+          onEnter: () => {
+            document.querySelector("#bar").style.backgroundColor =
+              "rgb(0, 0, 0)";
+          },
+          onLeaveBack: () => {
+            document.querySelector("#bar").style.backgroundColor =
+              "rgba(13, 13, 13, 0.8)";
+          },
+        },
+      });
+
+      let audioUnlocked = false;
+      const audio_player = document.getElementById("audio-player");
+      const buttons = document.querySelectorAll(".box");
+
+      document.body.addEventListener("click", () => {
+        audioUnlocked = true;
+      });
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("mouseover", () => {
+          if (!audioUnlocked) return;
+          const audiosrc = btn.getAttribute("data-audio");
+
+          if (audiosrc) {
+            audio_player.src = audiosrc;
+            audio_player.load();
+            audio_player.play().catch((err) => {
+              console.log("Audio play failed: ", err);
+            });
+          }
+        });
+
+        btn.addEventListener("mouseout", () => {
+          audio_player.pause();
+          audio_player.currentTime = 0;
+        });
+      });
+    });
+
+    // Add event listeners for lesson 2 greetings
+    const greetingItems = document.querySelectorAll("#Greetings-list li");
+
+    greetingItems.forEach((item) => {
+      item.addEventListener("mouseover", () => {
+        if (!audioUnlocked) return;
+        const audiosrc = item.getAttribute("data-audio");
+
+        if (audiosrc) {
+          audio_player.src = audiosrc;
+          audio_player.load();
+          audio_player.play().catch((err) => {
+            console.log("Audio play failed: ", err);
+          });
+        }
+      });
+
+      item.addEventListener("mouseout", () => {
+        audio_player.pause();
+        audio_player.currentTime = 0;
+      });
+    });
+  </script>
+</body>
+
+</html>

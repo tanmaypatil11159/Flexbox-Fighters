@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+         height: 100vh;
+    }
+
+    .container {
+        width: 80vw;
+        height: 70vh;
+        background-color: black;
+        border-radius: 20px;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-areas: "box";
+        color: white;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .box {
+        border: 2px solid white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        font-size: 3vw;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        cursor: pointer;
+        background-color: gray;
+    }
+    .box :hover {
+        scale: (10%);
+    }
+    .box:hover {
+        background-color: rgb(64, 64, 64);
+    }
+
+    @media(max-width: 2500px) {
+        .container {
+         display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        grid-template-areas: "box";
+        }
+    }
+    @media(max-width: 1000px) {
+        .container {
+         display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+        grid-template-areas: "box";
+        }
+        .box {
+            border-radius: 10px;
+        }
+    }
+
+
+    
+</style>
+
+<body>
+    <div class="container">
+        <div class="box" >1</div>
+        <div class="box" >2</div>
+        <div class="box" >3</div>
+        <div class="box" >4</div>
+        <div class="box" >5</div>
+        <div class="box" >6</div>
+        <div class="box" >7</div>
+        <div class="box" >8</div>
+        <div class="box" >9</div>
+        <div class="box" >10</div>
+        <div class="box" >11</div>
+        <div class="box" >12</div>
+        <div class="box" >13</div>
+        <div class="box" >14</div>
+        <div class="box" >15</div>
+        <div class="box" >16</div>
+        <div class="box" >17</div>
+        <div class="box" >18</div>
+        <div class="box" >19</div>
+        <div class="box" >20</div>
+        <div class="box" >21</div>
+        <div class="box" >22</div>
+        <div class="box" >23</div>
+        <div class="box" >24</div>
+        <div class="box" >25</div>
+        <div class="box" >26</div>
+        <div class="box" >27</div>
+        <div class="box" >28</div>
+        <div class="box" >29</div>
+        <div class="box" >30</div>
+    </div>
+</body>
+
+</html>
